@@ -16,6 +16,7 @@ other tools used in this project:
 
 # To-do list
 
+- [x] set basic project structure
 - [ ] build simple user input form, catch inputs
 - [ ] get the data : write an API call function that pulls data fromt the PVGIS service
 - [ ] clean and prepare the data set

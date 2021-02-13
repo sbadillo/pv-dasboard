@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
 
 <head>
-
-    <title>My PV Dashboard</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!--import script files needed from plotly and bootstrap-->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
         crossorigin="anonymous"></script>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+
+
+    <!-- <link rel="stylesheet" type="text/css" href="static/css/mystyle.css"> -->
+
+    <title>My PV Dashboard</title>
 
 </head>
 
@@ -35,7 +36,7 @@
         <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
             <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="https://www.udacity.com">Udacity</a>
+                    <a class="nav-link" href="#">Link</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Other Link</a>
@@ -63,10 +64,85 @@
         <div class="col-11">
 
             <!--chart descriptions-->
-            <div id="middle-info" class="mt-3">
+
+            <div id="middle-info" class="container mt-3">
 
                 <h2 id="tag-line">Data Dashboard</h2>
                 <h4 id="tag-line" class="text-muted">Sub-header</h4>
+
+            </div>
+
+
+            <!-- input form -->
+            <div id="user-input" class="container mt-3 ">
+
+                <form id="user-input-form" class="">
+
+                    <div class="row align-items-center mb-2">
+                        <div class="col-3">
+                            <div class="form-floating">
+                                <input type="latitude" class="form-control" placeholder="latitude" aria-label="latitude"
+                                    autofocus required>
+                                <label for="latitude">latitude</label>
+                            </div>
+
+                        </div>
+                        <div class="col-3">
+                            <div class="form-floating">
+                                <input type="longitude" class="form-control" placeholder="longitude"
+                                    aria-label="longitude" required>
+                                <label for="longitude">longitude</label>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row align-items-center mb-2">
+                        <div class="col-3">
+                            <div class="input-group">
+                                <div class="form-floating">
+                                    <input type="nameplate" class="form-control" id="nameplate" placeholder="e.g 3"
+                                        value=3 aria-describedby="nameplate-help" required>
+                                    <label for="nameplate">Peak power</label>
+                                </div>
+                                <span class="input-group-text" id="basic-addon2">kWp</span>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <span id="nameplate-help" class="form-text">Nominal power of the system in
+                                kilowatts-peak.</span>
+                        </div>
+                    </div>
+
+                    <div class="row  align-items-center mb-2">
+
+                        <div class="col-3">
+                            <input type="slope" class="form-control " id="slope" placeholder="Tilt"
+                                aria-describedby="slope-help" required>
+                        </div>
+                        <div class="col-3">
+                            <span id="slope-help" class="form-text">0 deg = flat surface</span>
+                        </div>
+                    </div>
+
+
+                    <div class="row  align-items-center mb-2">
+
+                        <div class="col-3">
+                            <input type="azimuth" class="form-control " id="azimuth" placeholder="Azimuth"
+                                aria-describedby="azimuth-help" required>
+                        </div>
+                        <div class="col-3">
+                            <span id="azimuth-help" class="form-text"> -90° is East, 0° is South and 90° is
+                                West.</span>
+                        </div>
+                    </div>
+
+
+                    <button type="submit" id="button-submit" class="btn btn-primary"
+                        onclick="validateStyles()">Submit</button>
+
+                </form>
 
             </div>
 
@@ -76,14 +152,15 @@
                 <!--top two charts-->
                 <div class="row">
                     <div class="col-6">
-                        hi
-
-                        <!-- <div id="{{ids[0]}}"></div> -->
+                        (☞ﾟヮﾟ)☞
+                        {#
+                        <!-- <div id="{{ids[0]}}"></div> --> #}
                     </div>
                     <div class="col-6">
-                        hi
+                        ☜(ﾟヮﾟ☜)
 
-                        <!-- <div id="{{ids[1]}}"></div> -->
+                        {#
+                        <!-- <div id="{{ids[1]}}"></div> --> #}
                     </div>
                 </div>
 
@@ -91,25 +168,27 @@
                 <div class="row mb-6">
                     <div class="col-6">
                         <div id="chart3">
-                            <!-- <div id="{{ids[2]}}"></div> -->
-                            hi
+                            {#
+                            <!-- <div id="{{ids[2]}}"></div> --> #}
+                            (☞ﾟヮﾟ)☞
 
                         </div>
                     </div>
                     <div class="col-6">
                         <div id="chart4">
-                            hi
-                            <!-- <div id="{{ids[3]}}"></div> -->
+                            ☜(ﾟヮﾟ☜)
+                            {#
+                            <!-- <div id="{{ids[3]}}"></div> --> #}
                         </div>
                         <div>
                         </div>
 
                     </div>
-                    <div>
-                    </div>
+                </div>
+            </div>
 
-                    <!--footer section-->
-                    <div id="footer" class="container"></div>
+            <!--footer section-->
+            <div id="footer" class="container"></div>
 
 </body>
 
@@ -127,6 +206,21 @@
                 figures[i].layout || {});
         }
     </script> -->
+
+    <script>
+        // On click, validate
+        function validateStyles() {
+            // this method of appending classes names works in ALL browsers
+            var element, name, arr;
+            element = document.getElementById("user-input-form");
+            name = "was-validated";
+            arr = element.className.split(" ");
+            if (arr.indexOf(name) == -1) {
+                element.className += " " + name;
+            }
+        }
+    </script>
+
 
 </footer>
 
