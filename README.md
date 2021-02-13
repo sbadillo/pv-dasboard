@@ -16,11 +16,11 @@ other tools used in this project:
 
 # To-do list
 
-- [ ] find a data set or a few data sets that you're interested in
-- [ ] explore and clean the data set
-- [ ] put the data into a csv file or files - you can use pandas or spreadsheet software to do this
-- [ ] upload your data sets to the correct folder
+- [ ] build simple user input form, catch inputs
+- [ ] get the data : write an API call function that pulls data fromt the PVGIS service
+- [ ] clean and prepare the data set
+- [ ] put the data into a csv file or json
 - [ ] write a Python script to read in the data set and set up the Plotly visualizations
 - [ ] set up a virtual environment and install the necessary libraries to run your app
-- [ ] run your web app locally to make sure that everything works
+- [ ] run web app locally to make sure that everything works
 - [ ] deploy the app to Heroku or some other back-end service
