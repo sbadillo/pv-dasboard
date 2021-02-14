@@ -13,6 +13,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
         crossorigin="anonymous"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
 
@@ -146,43 +148,8 @@
             </div>
 
             <!--charts-->
-            <div id="charts" class="container mt-3 text-center">
-
-                <!--top two charts-->
-                <div class="row">
-                    <div class="col-6">
-                        (☞ﾟヮﾟ)☞
-                        {#
-                        <!-- <div id="{{ids[0]}}"></div> --> #}
-                    </div>
-                    <div class="col-6">
-                        ☜(ﾟヮﾟ☜)
-                        {#
-                        <!-- <div id="{{ids[1]}}"></div> --> #}
-                    </div>
-                </div>
-
-                <!--bottom two charts-->
-                <div class="row mb-6">
-                    <div class="col-6">
-                        <div id="chart3">
-                            {#
-                            <!-- <div id="{{ids[2]}}"></div> --> #}
-                            (☞ﾟヮﾟ)☞
-
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div id="chart4">
-                            ☜(ﾟヮﾟ☜)
-                            {#
-                            <!-- <div id="{{ids[3]}}"></div> --> #}
-                        </div>
-                        <div>
-                        </div>
-
-                    </div>
-                </div>
+            <div id="charts-container" class="container mt-3 text-center">
+                <!-- charts be inserted here -->
             </div>
 
             <!--footer section-->
@@ -217,7 +184,45 @@
                 element.className += " " + name;
             }
         }
+
+        //  overriding form submit to be able to do AJAX
+        // thanks again DO https://www.digitalocean.com/community/tutorials/submitting-ajax-forms-with-jquery
+        $(document).ready(function () {
+            // process the form
+            $('#user-input').submit(function (event) {
+                // get form data
+                // TODO
+                console.log("ajax : form submited")
+                var formData = {
+                    'latitude': $('input[name=latitude]').val(),
+                    'longitude': $('input[name=longitude]').val(),
+                    'nameplate': $('input[name=nameplate]').val(),
+                    'slope': $('input[name=slope]').val(),
+                    'azimuth': $('input[name=azimuth]').val()
+                };
+
+                // process form
+                $.ajax({
+                    type: 'POST',
+                    url: '/', // the url where we want to POST
+                    data: formData,
+                    dataType: 'json', // what type of data do we expect back from the server
+                    encode: true
+                })
+                    // using the done promise callback
+                    .done(function (data) {
+                        //log data to the console 
+                        console.log('ajax: got server response');
+                        console.log(data);
+                        // here we will handle errors and validation messages
+                    });
+                // stop the form from submitting the normal way and 
+                // refreshing the page
+                event.preventDefault();
+            });
+        });
     </script>
+
 
 
 </footer>

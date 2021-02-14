@@ -89,7 +89,7 @@ def return_figures(data):
         list (dict): list containing the four plotly visualizations
     """
 
-    print("data outputs len : ", len(data["outputs"]))
+    # print("data outputs len : ", len(data["outputs"]))
 
     # first chart plots arable land from 1990 to 2015 in top 10 economies
     # as a line chart

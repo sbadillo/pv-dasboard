@@ -3,7 +3,7 @@ from .utils import get_hourly_rad, return_figures
 import json
 
 import plotly
-from flask import render_template, request
+from flask import render_template, request, jsonify
 
 # from wrangling_scripts.wrangle_data import return_figures
 
@@ -17,7 +17,7 @@ def index():
 
     # handle the POST request
     if request.method == "POST":
-        print(request.form)
+        print("flask : got you")
         req = request.form
 
         json_rad = get_hourly_rad(
@@ -35,13 +35,10 @@ def index():
         # Convert the plotly figures to JSON for javascript in html template
         figuresJSON = json.dumps(figures, cls=plotly.utils.PlotlyJSONEncoder)
 
-        # return """
-        #       <p>{}</p>
-        #       """.format(
-        #     json_rad
-        # )
+        # return render_template("graphs.html", ids=ids, figuresJSON=figuresJSON)
 
-        return render_template("graphs.html", ids=ids, figuresJSON=figuresJSON)
+        response = figuresJSON
+        return jsonify(response)
 
     # figures = return_figures()
 
