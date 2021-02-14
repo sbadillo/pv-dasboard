@@ -76,20 +76,20 @@
             <!-- input form -->
             <div id="user-input" class="container mt-3 ">
 
-                <form id="user-input-form" class="">
+                <form method="POST" action="/" id="user-input-form" class="">
 
                     <div class="row align-items-center mb-2">
                         <div class="col-3">
                             <div class="form-floating">
-                                <input type="latitude" class="form-control" placeholder="latitude" aria-label="latitude"
-                                    autofocus required>
+                                <input type="latitude" name="latitude" class="form-control" placeholder="latitude"
+                                    aria-label="latitude" autofocus required>
                                 <label for="latitude">latitude</label>
                             </div>
 
                         </div>
                         <div class="col-3">
                             <div class="form-floating">
-                                <input type="longitude" class="form-control" placeholder="longitude"
+                                <input type="longitude" name="longitude" class="form-control" placeholder="longitude"
                                     aria-label="longitude" required>
                                 <label for="longitude">longitude</label>
                             </div>
@@ -101,8 +101,8 @@
                         <div class="col-3">
                             <div class="input-group">
                                 <div class="form-floating">
-                                    <input type="nameplate" class="form-control" id="nameplate" placeholder="e.g 3"
-                                        value=3 aria-describedby="nameplate-help" required>
+                                    <input type="nameplate" name="nameplate" class="form-control" id="nameplate"
+                                        placeholder="e.g 3" value=3 aria-describedby="nameplate-help" required>
                                     <label for="nameplate">Peak power</label>
                                 </div>
                                 <span class="input-group-text" id="basic-addon2">kWp</span>
@@ -117,7 +117,7 @@
                     <div class="row  align-items-center mb-2">
 
                         <div class="col-3">
-                            <input type="slope" class="form-control " id="slope" placeholder="Tilt"
+                            <input type="slope" name="slope" class="form-control " id="slope" placeholder="Tilt"
                                 aria-describedby="slope-help" required>
                         </div>
                         <div class="col-3">
@@ -129,8 +129,8 @@
                     <div class="row  align-items-center mb-2">
 
                         <div class="col-3">
-                            <input type="azimuth" class="form-control " id="azimuth" placeholder="Azimuth"
-                                aria-describedby="azimuth-help" required>
+                            <input type="azimuth" name="azimuth" class="form-control " id="azimuth"
+                                placeholder="Azimuth" aria-describedby="azimuth-help" required>
                         </div>
                         <div class="col-3">
                             <span id="azimuth-help" class="form-text"> -90° is East, 0° is South and 90° is

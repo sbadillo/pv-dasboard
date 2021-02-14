@@ -17,8 +17,9 @@ other tools used in this project:
 # To-do list
 
 - [x] set basic project structure
-- [ ] build simple user input form, catch inputs
-- [ ] get the data : write an API call function that pulls data fromt the PVGIS service
+- [x] build simple user input form,
+- [x] get form data, see : https://www.digitalocean.com/community/tutorials/processing-incoming-request-data-in-flask
+- [ ] write an API call function that pulls data fromt the PVGIS service
 - [ ] clean and prepare the data set
 - [ ] put the data into a csv file or json
 - [ ] write a Python script to read in the data set and set up the Plotly visualizations
