@@ -18,13 +18,14 @@
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 
 
-    <link rel="stylesheet" type="text/css" href="static/css/mystyle.css">
+    <!-- <link rel="stylesheet" type="text/css" href="static/css/mystyle.css"> -->
 
     <title>My PV Dashboard</title>
 
 </head>
 
 <body>
+
 
     <!--navbar links-->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
@@ -75,9 +76,9 @@
 
 
             <!-- input form -->
-            <div id="user-input" class="container mt-3 ">
+            <div id="user-input" class="container mt-3">
 
-                <form method="POST" action="/" id="user-input-form" class="">
+                <form method="POST" action="/" id="user-input-form" class="needs-validation" novalidate>
 
                     <div class="row align-items-center mb-2">
                         <div class="col-3">
@@ -86,7 +87,6 @@
                                     aria-label="latitude" autofocus required>
                                 <label for="latitude">latitude</label>
                             </div>
-
                         </div>
                         <div class="col-3">
                             <div class="form-floating">
@@ -102,46 +102,41 @@
                         <div class="col-3">
                             <div class="input-group">
                                 <div class="form-floating">
-                                    <input type="nameplate" name="nameplate" class="form-control" id="nameplate"
-                                        placeholder="e.g 3" value=3 aria-describedby="nameplate-help" required>
-                                    <label for="nameplate">Peak power</label>
+                                    <input type="peakpower" name="peakpower" class="form-control" id="peakpower"
+                                        placeholder="e.g 3" value=3 aria-describedby="peakpower-help" required>
+                                    <label for="peakpower">Peak power</label>
                                 </div>
                                 <span class="input-group-text" id="basic-addon2">kWp</span>
                             </div>
                         </div>
                         <div class="col-3">
-                            <span id="nameplate-help" class="form-text">Nominal power of the system in
-                                kilowatts-peak.</span>
+                            <span id="peakpower-help" class="form-text">Nominal power in kilowatts-peak.</span>
                         </div>
                     </div>
 
-                    <div class="row  align-items-center mb-2">
-
+                    <div class="row align-items-center mb-2">
                         <div class="col-3">
-                            <input type="slope" name="slope" class="form-control " id="slope" placeholder="Tilt"
-                                aria-describedby="slope-help" required>
+                            <input type="angle" name="angle" class="form-control" id="angle" placeholder="Tilt"
+                                aria-describedby="angle-help" required>
                         </div>
                         <div class="col-3">
-                            <span id="slope-help" class="form-text">0 deg = flat surface</span>
+                            <span id="angle-help" class="form-text">0 deg = flat surface</span>
                         </div>
                     </div>
 
 
-                    <div class="row  align-items-center mb-2">
-
+                    <div class="row align-items-center mb-2">
                         <div class="col-3">
                             <input type="azimuth" name="azimuth" class="form-control " id="azimuth"
                                 placeholder="Azimuth" aria-describedby="azimuth-help" required>
                         </div>
                         <div class="col-3">
-                            <span id="azimuth-help" class="form-text"> -90° is East, 0° is South and 90° is
+                            <span id="azimuth-help" class="form-text">-90° is East, 0° is South and 90° is
                                 West.</span>
                         </div>
                     </div>
 
-
-                    <button type="submit" id="button-submit" class="btn btn-primary"
-                        onclick="validateStyles()">Submit</button>
+                    <button type="submit" id="button-submit" class="btn btn-primary">Submit</button>
 
                 </form>
 
@@ -150,6 +145,19 @@
             <!--charts-->
             <div id="charts-container" class="container mt-3 text-center">
                 <!-- charts be inserted here -->
+                <!--top two charts-->
+                <div class="row">
+                    <div id="loader" class="invisible">loading ...</div>
+                    <div class="col-6">
+                        <!-- (☞ﾟヮﾟ)☞ -->
+                        <div id="figure-0"></div>
+
+                    </div>
+                    <div class="col-6">
+                        <!-- ☜(ﾟヮﾟ☜) -->
+                        <div id="figure-1"></div>
+                    </div>
+                </div>
             </div>
 
             <!--footer section-->
@@ -160,34 +168,19 @@
 
 <footer>
 
-    <!-- <script type="text/javascript">
-        // plots the figure with id
-        // id much match the div id above in the html
-        var figures = {{ figuresJSON | safe}};
-        var ids = {{ ids | safe}};
-        for (var i in figures) {
-            Plotly.plot(ids[i],
-                figures[i].data,
-                figures[i].layout || {});
-        }
-    </script> -->
 
     <script>
-        // On click, validate
-        function validateStyles() {
-            // this method of appending classes names works in ALL browsers
-            var element, name, arr;
-            element = document.getElementById("user-input-form");
-            name = "was-validated";
-            arr = element.className.split(" ");
-            if (arr.indexOf(name) == -1) {
-                element.className += " " + name;
-            }
-        }
+
+        
+        // var $loading = $('#loading-div').hide();
+
+
 
         //  overriding form submit to be able to do AJAX
         // thanks again DO https://www.digitalocean.com/community/tutorials/submitting-ajax-forms-with-jquery
         $(document).ready(function () {
+
+
             // process the form
             $('#user-input').submit(function (event) {
                 // get form data
@@ -196,30 +189,94 @@
                 var formData = {
                     'latitude': $('input[name=latitude]').val(),
                     'longitude': $('input[name=longitude]').val(),
-                    'nameplate': $('input[name=nameplate]').val(),
-                    'slope': $('input[name=slope]').val(),
+                    'peakpower': $('input[name=peakpower]').val(),
+                    'angle': $('input[name=angle]').val(),
                     'azimuth': $('input[name=azimuth]').val()
                 };
 
-                // process form
+                // AJAX server request
                 $.ajax({
                     type: 'POST',
                     url: '/', // the url where we want to POST
                     data: formData,
                     dataType: 'json', // what type of data do we expect back from the server
-                    encode: true
+                    encode: true,
+                    beforeSend: function () {
+                        $('#loader').removeClass("invisible");
+                    },
+                    complete: function () {
+                         $('#loader').addClass("invisible");
+                    }
                 })
                     // using the done promise callback
                     .done(function (data) {
-                        //log data to the console 
-                        console.log('ajax: got server response');
-                        console.log(data);
+
                         // here we will handle errors and validation messages
-                    });
+                        if (!data.success) {
+
+                            $('#loader').addClass("invisible");
+
+                            // handle errors (from server side) ---------------
+                            if (data.errors.latitude) {
+                                $('form').append('<div class="alert alert-warning mt-2">' + data.errors.latitude + '</div>');
+                            }
+
+                        } else {
+                            // ALL GOOD! just show the success message!
+                            console.log('return OK')
+                            console.log(data)
+                            figuresJSON = JSON.parse(data.figuresJSON)
+                            console.log(figuresJSON)
+
+
+                            TESTER = document.getElementById("figure-0")
+                            // Plotly.newPlot(TESTER, [{
+                            //     x: [1, 2, 3, 4, 5],
+                            //     y: [1, 2, 4, 8, 16]
+                            // }], {
+                            //     margin: { t: 0 }
+                            // });
+
+                            var data1 = [
+                                {
+                                    x: ['giraffes', 'orangutans', 'monkeys'],
+                                    y: [20, 14, 23],
+                                    type: 'bar'
+                                }
+                            ];
+                            console.log(data1);
+                            Plotly.newPlot('figure-0', figuresJSON[0]);
+
+                        }
+                    })
                 // stop the form from submitting the normal way and 
                 // refreshing the page
                 event.preventDefault();
             });
+
+
+            // prevent post submit if input is not valid
+            (function () {
+                'use strict'
+
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.querySelectorAll('.needs-validation')
+
+                // Loop over them and prevent submission
+                Array.prototype.slice.call(forms)
+                    .forEach(function (form) {
+                        form.addEventListener('submit', function (event) {
+                            if (!form.checkValidity()) {
+                                event.preventDefault()
+                                event.stopPropagation()
+                            }
+
+                            form.classList.add('was-validated')
+                        }, false)
+                    })
+            })()
+
+
         });
     </script>
 

@@ -1,6 +1,9 @@
 import time
 import requests
 
+import pandas as pd
+import plotly.graph_objects as go
+
 from requests.exceptions import HTTPError
 
 
@@ -55,6 +58,7 @@ def get_hourly_rad(
     except HTTPError as http_err:
         print(f"HTTP error occurred: {http_err}")
         print(r.text)
+
         return r.text
 
     except Exception as err:
@@ -75,10 +79,6 @@ def get_hourly_rad(
         return result
 
 
-import pandas as pd
-import plotly.graph_objs as go
-
-
 def return_figures(data):
     """Creates plotly visualizations
 
@@ -86,46 +86,61 @@ def return_figures(data):
         None
 
     Returns:
-        list (dict): list containing the four plotly visualizations
+        list (dict): list containing the plotly visualizations
     """
 
-    # print("data outputs len : ", len(data["outputs"]))
+    # hourly is a list of dicts : {'time': '20150101:0010', 'P': 0.0,
+    # 'Gb(i)': 0.0, 'Gd(i)': 0.0, 'Gr(i)': 0.0, 'H_sun': 0.0, 'T2m': -1.15,
+    # 'WS10m': 1.96, 'Int': 0.0}, ...
 
-    # first chart plots arable land from 1990 to 2015 in top 10 economies
-    # as a line chart
+    # build a main dataframe
+    df = pd.DataFrame.from_dict(data=data["outputs"]["hourly"])
+    index = pd.to_datetime(df["time"], format="%Y%m%d:%H%M")
+    df.index = index
 
-    graph_one = []
-    graph_one.append(
-        go.Scatter(x=[0, 1, 2, 3, 4, 5], y=[0, 2, 4, 6, 8, 10], mode="lines")
+    df["G(i)"] = df["Gb(i)"] + df["Gd(i)"] + df["Gr(i)"]
+
+    # build secondary df, temporal selections and resampling
+    summer = df["2015-06-30"]  # graph 1 typical day
+    winter = df["2015-12-24"]  # graph 2 typical day
+    monthly = df.resample("M").sum()  # for calendar monthly
+
+    # todo : averaged day of summer
+    # todo : averaged day of winter
+
+    # Convert Dataframe Indexes to Hour:Minute format to make plotting easier
+    summer.index = summer.index.strftime("%H")
+    winter.index = winter.index.strftime("%H")
+    monthly.index = monthly.index.strftime("%b")
+
+    # construct first chart
+    chart_summer = []
+    chart_summer.append(
+        go.Scatter(x=list(summer.index), y=list(summer["G(i)"].values), mode="lines")
     )
 
-    layout_one = dict(
-        title="Chart One",
-        xaxis=dict(title="x-axis label"),
-        yaxis=dict(title="y-axis label"),
+    layout_summer = dict(
+        title="Summer day",
+        xaxis=dict(title="Hour of day"),
+        yaxis=dict(title="Global irradiance [W/m2]"),
     )
 
-    # second chart plots ararble land for 2015 as a bar chart
-    graph_two = []
+    # construct second chart
+    chart_winter = []
 
-    graph_two.append(
-        go.Bar(
-            x=["a", "b", "c", "d", "e"],
-            y=[12, 9, 7, 5, 1],
-        )
+    chart_winter.append(
+        go.Scatter(x=list(winter.index), y=list(winter["G(i)"].values), mode="lines")
     )
 
-    layout_two = dict(
-        title="Chart Two",
-        xaxis=dict(
-            title="x-axis label",
-        ),
-        yaxis=dict(title="y-axis label"),
+    layout_winter = dict(
+        title="Winter day",
+        xaxis=dict(title="Hour of day"),
+        yaxis=dict(title="Global irradiance [W/m2]"),
     )
 
     # append all charts to the figures list
     figures = []
-    figures.append(dict(data=graph_one, layout=layout_one))
-    figures.append(dict(data=graph_two, layout=layout_two))
+    figures.append(dict(data=chart_summer, layout=layout_summer))
+    figures.append(dict(data=chart_winter, layout=layout_winter))
 
     return figures

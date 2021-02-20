@@ -3,9 +3,10 @@ from .utils import get_hourly_rad, return_figures
 import json
 
 import plotly
-from flask import render_template, request, jsonify
 
-# from wrangling_scripts.wrangle_data import return_figures
+from flask import render_template, request, jsonify
+import pandas as pd
+
 
 # We're going to be accepting POST requests on this route
 #   so we need to pass another argument to @app.route
@@ -20,30 +21,54 @@ def index():
         print("flask : got you")
         req = request.form
 
+        data = {}
+        data["success"] = False
+
+        # validations
+        data["errors"] = {}
+
+        if not req["latitude"].isnumeric():
+            data["errors"]["latitude"] = "latitude must be numeric"
+
+        if not req["longitude"].isnumeric():
+            data["errors"]["longitude"] = "longitude must be numeric"
+
+        if not req["peakpower"].isnumeric():
+            data["errors"]["peakpower"] = "peak power must be numeric"
+
+        if not req["angle"].isnumeric():
+            data["errors"]["angle"] = "angle must be numeric"
+
+        if not req["azimuth"].isnumeric():
+            data["errors"]["azimuth"] = "azimuth must be numeric"
+
+        if len(data["errors"]) != 0:
+            return data
+
+        # if all input is fine, run get_hourly_rad
         json_rad = get_hourly_rad(
             lat=req["latitude"],
             lon=req["longitude"],
-            peakpower=req["nameplate"],
-            angle=req["slope"],
+            peakpower=req["peakpower"],
+            angle=req["angle"],
             azimuth=req["azimuth"],
         )
 
         figures = return_figures(json_rad)
 
+        # plot ids for the html id tag
         ids = ["figure-{}".format(i) for i, _ in enumerate(figures)]
 
         # Convert the plotly figures to JSON for javascript in html template
         figuresJSON = json.dumps(figures, cls=plotly.utils.PlotlyJSONEncoder)
 
+        data["success"] = True
+        data["ids"] = ids
+        data["figuresJSON"] = figuresJSON
+
         # return render_template("graphs.html", ids=ids, figuresJSON=figuresJSON)
 
-        response = figuresJSON
-        return jsonify(response)
-
-    # figures = return_figures()
-
-    # plot ids for the html id tag
-    # # ids = ['figure-{}'.format(i) for i, _ in enumerate(figures)]
+        return data
 
     return render_template(
         "index.html",
