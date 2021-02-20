@@ -83,14 +83,14 @@
                     <div class="row align-items-center mb-2">
                         <div class="col-3">
                             <div class="form-floating">
-                                <input type="latitude" name="latitude" class="form-control" placeholder="latitude"
+                                <input type="latitude" name="latitude" class="form-control" placeholder="latitude" value=48
                                     aria-label="latitude" autofocus required>
                                 <label for="latitude">latitude</label>
                             </div>
                         </div>
                         <div class="col-3">
                             <div class="form-floating">
-                                <input type="longitude" name="longitude" class="form-control" placeholder="longitude"
+                                <input type="longitude" name="longitude" class="form-control" placeholder="longitude" value=3
                                     aria-label="longitude" required>
                                 <label for="longitude">longitude</label>
                             </div>
@@ -103,7 +103,7 @@
                             <div class="input-group">
                                 <div class="form-floating">
                                     <input type="peakpower" name="peakpower" class="form-control" id="peakpower"
-                                        placeholder="e.g 3" value=3 aria-describedby="peakpower-help" required>
+                                        placeholder="e.g 3" aria-describedby="peakpower-help" required>
                                     <label for="peakpower">Peak power</label>
                                 </div>
                                 <span class="input-group-text" id="basic-addon2">kWp</span>
@@ -117,7 +117,7 @@
                     <div class="row align-items-center mb-2">
                         <div class="col-3">
                             <input type="angle" name="angle" class="form-control" id="angle" placeholder="Tilt"
-                                aria-describedby="angle-help" required>
+                                value=35 aria-describedby="angle-help" required>
                         </div>
                         <div class="col-3">
                             <span id="angle-help" class="form-text">0 deg = flat surface</span>
@@ -127,7 +127,7 @@
 
                     <div class="row align-items-center mb-2">
                         <div class="col-3">
-                            <input type="azimuth" name="azimuth" class="form-control " id="azimuth"
+                            <input type="azimuth" name="azimuth" class="form-control " id="azimuth" value=0
                                 placeholder="Azimuth" aria-describedby="azimuth-help" required>
                         </div>
                         <div class="col-3">
@@ -145,9 +145,17 @@
             <!--charts-->
             <div id="charts-container" class="container mt-3 text-center">
                 <!-- charts be inserted here -->
-                <!--top two charts-->
+                <!--top row charts-->
                 <div class="row">
                     <div id="loader" class="invisible">loading ...</div>
+                    <div class="col-12">
+                        <div id="figure-monthly"></div>
+                </div>
+
+                <!--bottom two charts-->
+
+                <div class="row">
+                    {# <div id="loader" class="invisible">loading ...</div> #}
                     <div class="col-6">
                         <!-- (☞ﾟヮﾟ)☞ -->
                         <div id="figure-0"></div>
@@ -228,24 +236,11 @@
                             figuresJSON = JSON.parse(data.figuresJSON)
                             console.log(figuresJSON)
 
-
-                            TESTER = document.getElementById("figure-0")
-                            // Plotly.newPlot(TESTER, [{
-                            //     x: [1, 2, 3, 4, 5],
-                            //     y: [1, 2, 4, 8, 16]
-                            // }], {
-                            //     margin: { t: 0 }
-                            // });
-
-                            var data1 = [
-                                {
-                                    x: ['giraffes', 'orangutans', 'monkeys'],
-                                    y: [20, 14, 23],
-                                    type: 'bar'
-                                }
-                            ];
-                            console.log(data1);
+                            
+                            Plotly.newPlot('figure-monthly', figuresJSON[2]);
                             Plotly.newPlot('figure-0', figuresJSON[0]);
+                            Plotly.newPlot('figure-1', figuresJSON[1]);
+
 
                         }
                     })

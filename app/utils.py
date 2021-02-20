@@ -69,13 +69,6 @@ def get_hourly_rad(
 
         result = r.json()
 
-        # df_r = pd.DataFrame.from_dict(data=tmy_json["outputs"]["tmy_hourly"])
-        # df_tmy = df_r[["time(UTC)", "G(h)", "Gb(n)", "Gd(h)"]].copy()
-        # df_tmy.set_index(self.times, inlace=True)
-        # df_tmy.columns = ["time_pvgis", "GHI", "DNI", "DHI"]
-
-        # return df_tmy
-
         return result
 
 
@@ -101,46 +94,63 @@ def return_figures(data):
     df["G(i)"] = df["Gb(i)"] + df["Gd(i)"] + df["Gr(i)"]
 
     # build secondary df, temporal selections and resampling
-    summer = df["2015-06-30"]  # graph 1 typical day
-    winter = df["2015-12-24"]  # graph 2 typical day
+    summerday = df["2015-06-15"]  # graph 1 typical day
+    winterday = df["2015-12-15"]  # graph 2 typical day
     monthly = df.resample("M").sum()  # for calendar monthly
+
+    summer_avg = df["2015-06"].groupby(df["2015-06"].index.hour).mean()
+    winter_avg = df["2015-12"].groupby(df["2015-12"].index.hour).mean()
 
     # todo : averaged day of summer
     # todo : averaged day of winter
 
     # Convert Dataframe Indexes to Hour:Minute format to make plotting easier
-    summer.index = summer.index.strftime("%H")
-    winter.index = winter.index.strftime("%H")
+    summerday.index = summerday.index.strftime("%H")
+    winterday.index = winterday.index.strftime("%H")
     monthly.index = monthly.index.strftime("%b")
 
-    # construct first chart
+    # summer chart
     chart_summer = []
     chart_summer.append(
-        go.Scatter(x=list(summer.index), y=list(summer["G(i)"].values), mode="lines")
+        go.Scatter(
+            x=list(summerday.index), y=list(summer_avg["P"].values), mode="lines"
+        )
     )
 
     layout_summer = dict(
-        title="Summer day",
+        title="Average of June's days",
         xaxis=dict(title="Hour of day"),
-        yaxis=dict(title="Global irradiance [W/m2]"),
+        yaxis=dict(title="Energy Production [Wh]"),
     )
 
-    # construct second chart
+    # winter second chart
     chart_winter = []
-
     chart_winter.append(
-        go.Scatter(x=list(winter.index), y=list(winter["G(i)"].values), mode="lines")
+        go.Scatter(
+            x=list(winterday.index), y=list(winter_avg["P"].values), mode="lines"
+        )
     )
 
     layout_winter = dict(
-        title="Winter day",
+        title="Average of December's Day",
         xaxis=dict(title="Hour of day"),
-        yaxis=dict(title="Global irradiance [W/m2]"),
+        yaxis=dict(title="Energy Production [Wh]"),
+    )
+
+    # monthly second chart
+    chart_monthly = []
+    chart_monthly.append(go.Bar(x=list(monthly.index), y=list(monthly["P"].values)))
+
+    layout_monthly = dict(
+        title="Monthly Energy Production",
+        xaxis=dict(title="month"),
+        yaxis=dict(title="Energy Production [Wh]"),
     )
 
     # append all charts to the figures list
     figures = []
     figures.append(dict(data=chart_summer, layout=layout_summer))
     figures.append(dict(data=chart_winter, layout=layout_winter))
+    figures.append(dict(data=chart_monthly, layout=layout_monthly))
 
     return figures
